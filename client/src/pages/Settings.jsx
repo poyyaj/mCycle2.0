@@ -3,14 +3,25 @@ import { useTheme } from '../context/ThemeContext';
 import { useInsights, useCycles } from '../hooks/useApi';
 import { generateHealthReport } from '../utils/pdfExport';
 
+import { useState } from 'react';
+
 export default function Settings() {
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const { insights } = useInsights();
     const { cycles } = useCycles();
+    const [pdfStatus, setPdfStatus] = useState('');
 
     const handleExportPDF = () => {
-        generateHealthReport(user, cycles, null, insights);
+        try {
+            setPdfStatus('Generating...');
+            generateHealthReport(user, cycles, null, insights);
+            setPdfStatus('✅ PDF downloaded!');
+            setTimeout(() => setPdfStatus(''), 3000);
+        } catch (err) {
+            console.error('PDF error:', err);
+            setPdfStatus('❌ Failed: ' + err.message);
+        }
     };
 
     return (
@@ -58,6 +69,7 @@ export default function Settings() {
                 <button onClick={handleExportPDF} className="btn-primary">
                     📥 Download Health Report (PDF)
                 </button>
+                {pdfStatus && <p className="text-sm mt-2">{pdfStatus}</p>}
             </div>
 
             {/* Logout */}

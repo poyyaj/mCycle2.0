@@ -1,11 +1,16 @@
-// Only load .env file in development (Render sets env vars directly)
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
+// Only load .env in local development when file exists
+const path = require('path');
+const fs = require('fs');
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+    require('dotenv').config({ path: envPath });
+    console.log('📁 Loaded .env file (local development)');
+} else {
+    console.log('☁️  No .env file found — using system environment variables');
 }
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const { initDb } = require('./db/database');
 
 const authRoutes = require('./routes/auth');
@@ -18,10 +23,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Startup checks
+// Startup diagnostics
 console.log(`🔧 NODE_ENV: ${NODE_ENV}`);
 console.log(`🔧 PORT: ${PORT}`);
-console.log(`🔧 DATABASE_URL: ${process.env.DATABASE_URL ? '✅ SET (' + process.env.DATABASE_URL.substring(0, 30) + '...)' : '❌ NOT SET'}`);
+console.log(`🔧 DATABASE_URL: ${process.env.DATABASE_URL ? '✅ SET' : '❌ NOT SET'}`);
+console.log(`🔧 JWT_SECRET: ${process.env.JWT_SECRET ? '✅ SET' : '❌ NOT SET'}`);
 
 // CORS — allow configured origins or localhost in dev
 const allowedOrigins = process.env.CORS_ORIGIN
@@ -61,6 +67,6 @@ initDb().then(() => {
         console.log(`🌸 mCycle server running on http://localhost:${PORT} [${NODE_ENV}]`);
     });
 }).catch(err => {
-    console.error('❌ Failed to initialize database:', err);
+    console.error('❌ Failed to initialize database:', err.message);
     process.exit(1);
 });
