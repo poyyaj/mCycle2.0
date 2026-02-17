@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { formatDate } from './dateHelpers';
 import { getBMICategory, getConsistencyLabel } from './calculations';
 
@@ -36,7 +36,7 @@ export function generateHealthReport(userData, cycles, metrics, insights) {
             y += 8;
 
             const ca = insights.cycle_analysis;
-            doc.autoTable({
+            autoTable(doc, {
                 startY: y,
                 head: [['Metric', 'Value']],
                 body: [
@@ -62,7 +62,7 @@ export function generateHealthReport(userData, cycles, metrics, insights) {
             doc.text('Latest Health Metrics', 14, y);
             y += 8;
 
-            doc.autoTable({
+            autoTable(doc, {
                 startY: y,
                 head: [['Metric', 'Value']],
                 body: [
@@ -95,7 +95,7 @@ export function generateHealthReport(userData, cycles, metrics, insights) {
             y += 8;
 
             if (pi.warnings?.length > 0) {
-                doc.autoTable({
+                autoTable(doc, {
                     startY: y,
                     head: [['Type', 'Severity', 'Description']],
                     body: pi.warnings.map(w => [w.type, w.severity, w.message]),
@@ -117,7 +117,7 @@ export function generateHealthReport(userData, cycles, metrics, insights) {
             doc.text('Recent Cycles', 14, y);
             y += 8;
 
-            doc.autoTable({
+            autoTable(doc, {
                 startY: y,
                 head: [['Start Date', 'End Date', 'Cycle Length', 'Bleeding Duration']],
                 body: recentCycles.map(c => [
