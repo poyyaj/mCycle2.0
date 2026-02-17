@@ -1,7 +1,23 @@
 const { Pool } = require('pg');
 
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+    console.error('');
+    console.error('══════════════════════════════════════════════════════════');
+    console.error('  ❌ DATABASE_URL environment variable is NOT SET!');
+    console.error('');
+    console.error('  On Render, you need to:');
+    console.error('  1. Create a PostgreSQL database (New+ → PostgreSQL)');
+    console.error('  2. Copy its "Internal Database URL"');
+    console.error('  3. Add it as DATABASE_URL in your Web Service → Environment');
+    console.error('══════════════════════════════════════════════════════════');
+    console.error('');
+    process.exit(1);
+}
+
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 

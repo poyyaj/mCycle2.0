@@ -1,4 +1,8 @@
-require('dotenv').config();
+// Only load .env file in development (Render sets env vars directly)
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -13,6 +17,11 @@ const insightsRoutes = require('./routes/insights');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// Startup checks
+console.log(`🔧 NODE_ENV: ${NODE_ENV}`);
+console.log(`🔧 PORT: ${PORT}`);
+console.log(`🔧 DATABASE_URL: ${process.env.DATABASE_URL ? '✅ SET (' + process.env.DATABASE_URL.substring(0, 30) + '...)' : '❌ NOT SET'}`);
 
 // CORS — allow configured origins or localhost in dev
 const allowedOrigins = process.env.CORS_ORIGIN
