@@ -48,7 +48,7 @@ export function generateHealthReport(userData, cycles, metrics, insights) {
             ],
             theme: 'grid',
             headStyles: { fillColor: [233, 30, 140] },
-            margin: { left: 14. },
+            margin: { left: 14 },
         });
         y = doc.lastAutoTable.finalY + 12;
     }
