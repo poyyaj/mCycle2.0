@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: mcycle
+    runtime: node
+    buildCommand: npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mcycle-db
+          property: connectionString
+
+databases:
+  - name: mcycle-db
+    plan: free
+    databaseName: mcycle
+    user: mcycle_user
